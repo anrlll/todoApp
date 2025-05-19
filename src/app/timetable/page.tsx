@@ -7,7 +7,6 @@ import {
   Typography, 
   TextField, 
   Button, 
-  Grid, 
   FormControl, 
   InputLabel, 
   Select, 
@@ -96,8 +95,8 @@ export default function TimeTable() {
         タイムテーブル
       </Typography>
       
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6} component="div">
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+        <Box sx={{ flex: 1 }}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
               スケジュール入力
@@ -127,7 +126,7 @@ export default function TimeTable() {
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
                     fullWidth
-                    InputLabelProps={{ shrink: true }}
+                    slotProps={{ inputLabel: { shrink: true } }}
                   />
                   <TextField
                     label="終了時間"
@@ -135,7 +134,7 @@ export default function TimeTable() {
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
                     fullWidth
-                    InputLabelProps={{ shrink: true }}
+                    slotProps={{ inputLabel: { shrink: true } }}
                   />
                 </>
               ) : (
@@ -180,17 +179,17 @@ export default function TimeTable() {
               </Button>
             </Box>
           </Paper>
-        </Grid>
+        </Box>
 
-        <Grid item xs={12} md={6} component="div">
+        <Box sx={{ flex: 1 }}>
           <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               スケジュール表示
             </Typography>
             <ScheduleDisplay schedules={schedules} />
           </Paper>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Box>
   );
 } 
