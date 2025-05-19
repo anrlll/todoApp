@@ -79,8 +79,8 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Box
                       sx={{
-                        width: 16,
-                        height: 16,
+                        minWidth: 16,
+                        minHeight: 16,
                         backgroundColor: schedule.color,
                         borderRadius: '4px',
                       }}
