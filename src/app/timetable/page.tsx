@@ -60,10 +60,8 @@ export default function TimeTablePage() {
           スケジュール登録
         </Button>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-        <Box sx={{ width: { xs: '100%', md: '67%' } }}>
+      <Box>
           <ScheduleDisplay schedules={schedules} onDeleteSchedule={handleDeleteSchedule} />
-        </Box>
       </Box>
     </Box>
   );

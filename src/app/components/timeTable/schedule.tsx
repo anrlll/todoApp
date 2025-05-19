@@ -228,16 +228,17 @@ export default function ScheduleDisplay({ schedules, onDeleteSchedule }: Schedul
   const [highlightedScheduleId, setHighlightedScheduleId] = useState<string | null>(null);
 
   return (
-    <>
-      <Paper sx={{ p: 3 }}>
+    <Box sx={{ display: 'flex', gap: 3, width: '100%' }}>
+      <Paper sx={{ p: 3, flex: 1 }}>
         <Typography variant="h6" gutterBottom>
           スケジュール表示
         </Typography>
         <Box sx={{ 
           position: 'relative', 
           width: '100%', 
-          height: 400,
+          height: 700,
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
           gap: 4
@@ -263,11 +264,13 @@ export default function ScheduleDisplay({ schedules, onDeleteSchedule }: Schedul
           </Box>
         </Box>
       </Paper>
-      <ScheduleList 
-        schedules={schedules} 
-        onDeleteSchedule={onDeleteSchedule} 
-        onHighlightSchedule={setHighlightedScheduleId}
-      />
-    </>
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <ScheduleList 
+          schedules={schedules} 
+          onDeleteSchedule={onDeleteSchedule} 
+          onHighlightSchedule={setHighlightedScheduleId}
+        />
+      </Box>
+    </Box>
   );
 } 
