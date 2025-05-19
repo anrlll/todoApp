@@ -27,7 +27,28 @@ interface ScheduleInputProps {
   existingSchedules: Schedule[];
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
+const COLORS = [
+  '#0088FE', // 青
+  '#00C49F', // 緑
+  '#FFBB28', // 黄色
+  '#FF8042', // オレンジ
+  '#8884D8', // 紫
+  '#82CA9D', // 薄緑
+  '#FF6B6B', // 赤
+  '#4ECDC4', // ターコイズ
+  '#FFD93D', // 黄色
+  '#6C5CE7', // 紫
+  '#A8E6CF', // ミント
+  '#FF8B94', // ピンク
+  '#96CEB4', // セージ
+  '#FFEEAD', // クリーム
+  '#D4A5A5', // ローズ
+  '#9B59B6', // パープル
+  '#3498DB', // ブルー
+  '#E67E22', // オレンジ
+  '#2ECC71', // エメラルド
+  '#F1C40F'  // イエロー
+];
 
 // 時間の選択肢を生成（00:00から23:30まで30分間隔）
 const generateTimeOptions = () => {
