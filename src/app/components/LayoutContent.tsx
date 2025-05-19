@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 const drawerWidth = 240;
-const collapsedWidth = 64;
+const collapsedWidth = 80;
 
 export default function LayoutContent({
   children,
@@ -53,8 +53,9 @@ export default function LayoutContent({
         <Box sx={{ 
           display: 'flex', 
           alignItems: 'center', 
-          justifyContent: 'flex-end',
-          p: 1,
+          justifyContent: 'flex-start',
+          px: 2.5,
+          py: 1,
           borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
         }}>
           <IconButton onClick={toggleDrawer}>
