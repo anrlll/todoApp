@@ -38,8 +38,8 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
   });
 
   return (
-    <Paper sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+    <Paper sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexShrink: 0 }}>
         <Typography variant="h6">
           スケジュール一覧
         </Typography>
@@ -51,8 +51,8 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
           スケジュール登録
         </Button>
       </Box>
-      <TableContainer>
-        <Table>
+      <TableContainer sx={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell>時間</TableCell>
