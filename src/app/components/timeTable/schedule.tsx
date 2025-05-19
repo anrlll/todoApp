@@ -1,6 +1,8 @@
 'use client';
 
 import { Box, Typography, Paper } from '@mui/material';
+import { useEffect, useState } from 'react';
+import ScheduleList from './scheduleList';
 
 interface Schedule {
   id: string;
@@ -12,6 +14,7 @@ interface Schedule {
 
 interface ScheduleDisplayProps {
   schedules: Schedule[];
+  onDeleteSchedule: (id: string) => Promise<void>;
 }
 
 // 時計の針の角度を計算
@@ -41,10 +44,35 @@ const generateSectorStyle = (startAngle: number, endAngle: number, color: string
 
 // 時計コンポーネント
 const Clock = ({ schedules, period }: { schedules: Schedule[], period: 'am' | 'pm' }) => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const filteredSchedules = schedules.filter(schedule => {
     const hour = parseInt(schedule.startTime.split(':')[0]);
     return period === 'am' ? hour < 12 : hour >= 12;
   });
+
+  // 現在時刻の角度を計算
+  const currentHour = currentTime.getHours();
+  const currentMinute = currentTime.getMinutes();
+  
+  // 午前/午後の判定
+  const isCurrentPeriod = period === 'am' ? currentHour < 12 : currentHour >= 12;
+  
+  // 針の角度を計算（該当時間帯でない場合は12時の位置に固定）
+  const currentHourAngle = isCurrentPeriod 
+    ? (currentHour % 12) * 30 + currentMinute * 0.5 
+    : 0;
+  const currentMinuteAngle = isCurrentPeriod 
+    ? currentMinute * 6 
+    : 0;
 
   return (
     <Box sx={{ 
@@ -114,75 +142,83 @@ const Clock = ({ schedules, period }: { schedules: Schedule[], period: 'am' | 'p
           }}
         />
       ))}
+
+      {/* 現在時刻の針 */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          width: '4px',
+          height: '80px',
+          backgroundColor: '#000',
+          transformOrigin: 'bottom center',
+          transform: `translate(-50%, -100%) rotate(${currentHourAngle}deg)`,
+          zIndex: 2,
+          borderRadius: '2px',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          width: '3px',
+          height: '120px',
+          backgroundColor: '#000',
+          transformOrigin: 'bottom center',
+          transform: `translate(-50%, -100%) rotate(${currentMinuteAngle}deg)`,
+          zIndex: 2,
+          borderRadius: '1.5px',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          width: '8px',
+          height: '8px',
+          backgroundColor: '#000',
+          borderRadius: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 3,
+        }}
+      />
     </Box>
   );
 };
 
-export default function ScheduleDisplay({ schedules }: ScheduleDisplayProps) {
+export default function ScheduleDisplay({ schedules, onDeleteSchedule }: ScheduleDisplayProps) {
   return (
-    <Paper sx={{ p: 3, height: '100%' }}>
-      <Typography variant="h6" gutterBottom>
-        スケジュール表示
-      </Typography>
-      <Box sx={{ 
-        position: 'relative', 
-        width: '100%', 
-        height: 400,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 4
-      }}>
-        {/* 午前の時計 */}
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="h6" gutterBottom>午前</Typography>
-          <Clock schedules={schedules} period="am" />
-        </Box>
-
-        {/* 午後の時計 */}
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="h6" gutterBottom>午後</Typography>
-          <Clock schedules={schedules} period="pm" />
-        </Box>
-
-        {/* スケジュールの凡例 */}
+    <>
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          スケジュール表示
+        </Typography>
         <Box sx={{ 
-          position: 'absolute', 
-          bottom: 0, 
-          left: 0, 
-          right: 0,
+          position: 'relative', 
+          width: '100%', 
+          height: 400,
           display: 'flex',
-          flexWrap: 'wrap',
-          gap: 1,
-          p: 1
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 4
         }}>
-          {schedules.map((schedule) => (
-            <Box
-              key={schedule.id}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                padding: '4px 8px',
-                borderRadius: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  width: 12,
-                  height: 12,
-                  backgroundColor: schedule.color,
-                  borderRadius: '50%',
-                }}
-              />
-              <Typography variant="body2">
-                {schedule.title} ({schedule.startTime}-{schedule.endTime})
-              </Typography>
-            </Box>
-          ))}
+          {/* 午前の時計 */}
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" gutterBottom>午前</Typography>
+            <Clock schedules={schedules} period="am" />
+          </Box>
+
+          {/* 午後の時計 */}
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" gutterBottom>午後</Typography>
+            <Clock schedules={schedules} period="pm" />
+          </Box>
         </Box>
-      </Box>
-    </Paper>
+      </Paper>
+      <ScheduleList schedules={schedules} onDeleteSchedule={onDeleteSchedule} />
+    </>
   );
 } 
