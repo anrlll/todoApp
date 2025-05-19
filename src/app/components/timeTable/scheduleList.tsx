@@ -45,7 +45,7 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
             <TableRow>
               <TableCell>時間</TableCell>
               <TableCell>タイトル</TableCell>
-              <TableCell align="right">操作</TableCell>
+              <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -55,7 +55,6 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
                 onMouseEnter={() => onHighlightSchedule?.(schedule.id)}
                 onMouseLeave={() => onHighlightSchedule?.(null)}
                 sx={{
-                  cursor: 'pointer',
                   '&:hover': {
                     backgroundColor: 'rgba(0, 0, 0, 0.04)',
                   },
@@ -82,6 +81,7 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
                     <IconButton
                       onClick={() => handleDelete(schedule.id)}
                       size="small"
+                      sx={{ cursor: 'pointer' }}
                     >
                       <DeleteIcon />
                     </IconButton>
