@@ -1,9 +1,5 @@
-import Todo from './components/todo/Todo';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <main className="min-h-screen bg-gray-100 py-8">
-      <Todo />
-    </main>
-  );
+  redirect('/todo');
 }
