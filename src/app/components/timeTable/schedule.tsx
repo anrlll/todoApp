@@ -228,7 +228,7 @@ export default function ScheduleDisplay({ schedules, onDeleteSchedule }: Schedul
   const [highlightedScheduleId, setHighlightedScheduleId] = useState<string | null>(null);
 
   return (
-    <Box sx={{ display: 'flex', gap: 3, width: '100%', height: 'calc(100vh - 64px)' }}>
+    <Box sx={{ display: 'flex', gap: 3, height: 'calc(100vh - 64px)' }}>
       <Paper sx={{ p: 3, flex: 1 }}>
         <Typography variant="h6" gutterBottom>
           スケジュール表示
@@ -264,7 +264,7 @@ export default function ScheduleDisplay({ schedules, onDeleteSchedule }: Schedul
           </Box>
         </Box>
       </Paper>
-      <Box sx={{ flex: 1, height: '100%' }}>
+      <Box sx={{ flex: 1 }}>
         <ScheduleList 
           schedules={schedules} 
           onDeleteSchedule={onDeleteSchedule} 
