@@ -42,6 +42,28 @@ const generateSectorStyle = (startAngle: number, endAngle: number, color: string
   };
 };
 
+// スケジュールを時間帯ごとに分割
+const splitScheduleByPeriod = (schedule: Schedule) => {
+  const startHour = parseInt(schedule.startTime.split(':')[0]);
+  const endHour = parseInt(schedule.endTime.split(':')[0]);
+  
+  // 午前と午後をまたぐ場合
+  if (startHour < 12 && endHour >= 12) {
+    return [
+      {
+        ...schedule,
+        endTime: '12:00',
+      },
+      {
+        ...schedule,
+        startTime: '12:00',
+      },
+    ];
+  }
+  
+  return [schedule];
+};
+
 // 時計コンポーネント
 const Clock = ({ schedules, period }: { schedules: Schedule[], period: 'am' | 'pm' }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -54,9 +76,13 @@ const Clock = ({ schedules, period }: { schedules: Schedule[], period: 'am' | 'p
     return () => clearInterval(timer);
   }, []);
 
-  const filteredSchedules = schedules.filter(schedule => {
-    const hour = parseInt(schedule.startTime.split(':')[0]);
-    return period === 'am' ? hour < 12 : hour >= 12;
+  // スケジュールを時間帯ごとに分割して表示
+  const displaySchedules = schedules.flatMap(schedule => {
+    const splitSchedules = splitScheduleByPeriod(schedule);
+    return splitSchedules.filter(splitSchedule => {
+      const hour = parseInt(splitSchedule.startTime.split(':')[0]);
+      return period === 'am' ? hour < 12 : hour >= 12;
+    });
   });
 
   // 現在時刻の角度を計算
@@ -84,12 +110,12 @@ const Clock = ({ schedules, period }: { schedules: Schedule[], period: 'am' | 'p
       backgroundColor: '#fff',
     }}>
       {/* スケジュールの領域 */}
-      {filteredSchedules.map((schedule) => {
+      {displaySchedules.map((schedule) => {
         const start = calculateHandAngle(schedule.startTime);
         const end = calculateHandAngle(schedule.endTime);
         return (
           <Box
-            key={schedule.id}
+            key={`${schedule.id}-${schedule.startTime}`}
             sx={generateSectorStyle(start.hourAngle, end.hourAngle, schedule.color)}
           >
             <svg width="300" height="300" viewBox="0 0 300 300">
