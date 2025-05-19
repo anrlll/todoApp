@@ -35,7 +35,7 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
   });
 
   return (
-    <Paper sx={{ p: 3, mt: 3 }}>
+    <Paper sx={{ p: 3 }}>
       <Typography variant="h6" gutterBottom>
         スケジュール一覧
       </Typography>
