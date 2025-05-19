@@ -1,10 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Button } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { Box } from '@mui/material';
 import ScheduleDisplay from '../components/timeTable/schedule';
-import ScheduleInput from '../components/timeTable/scheduleInput';
 
 interface Schedule {
   id: string;
@@ -15,7 +13,6 @@ interface Schedule {
 }
 
 export default function TimeTablePage() {
-  const router = useRouter();
   const [schedules, setSchedules] = useState<Schedule[]>([]);
 
   // スケジュールの取得
@@ -50,19 +47,8 @@ export default function TimeTablePage() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => router.push('/timetable/register')}
-        >
-          スケジュール登録
-        </Button>
-      </Box>
-      <Box>
-          <ScheduleDisplay schedules={schedules} onDeleteSchedule={handleDeleteSchedule} />
-      </Box>
+    <Box>
+      <ScheduleDisplay schedules={schedules} onDeleteSchedule={handleDeleteSchedule} />
     </Box>
   );
 } 

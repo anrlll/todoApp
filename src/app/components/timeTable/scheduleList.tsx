@@ -1,7 +1,8 @@
 'use client';
 
-import { Box, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip } from '@mui/material';
+import { Box, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useRouter } from 'next/navigation';
 
 interface Schedule {
   id: string;
@@ -18,6 +19,8 @@ interface ScheduleListProps {
 }
 
 export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightSchedule }: ScheduleListProps) {
+  const router = useRouter();
+
   const handleDelete = async (id: string) => {
     if (window.confirm('このスケジュールを削除してもよろしいですか？')) {
       try {
@@ -36,9 +39,18 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
 
   return (
     <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        スケジュール一覧
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h6">
+          スケジュール一覧
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.push('/timetable/register')}
+        >
+          スケジュール登録
+        </Button>
+      </Box>
       <TableContainer>
         <Table>
           <TableHead>
