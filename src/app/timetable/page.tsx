@@ -16,6 +16,7 @@ import {
   Tab,
   SelectChangeEvent
 } from '@mui/material';
+import ScheduleDisplay from '../components/timeTable/schedule';
 
 interface Schedule {
   id: string;
@@ -41,48 +42,6 @@ const generateTimeOptions = () => {
 };
 
 const TIME_OPTIONS = generateTimeOptions();
-
-// 時計の針の角度を計算
-const calculateHandAngle = (time: string) => {
-  const [hours, minutes] = time.split(':').map(Number);
-  const hourAngle = (hours % 12) * 30 + minutes * 0.5; // 1時間 = 30度、1分 = 0.5度
-  const minuteAngle = minutes * 6; // 1分 = 6度
-  return { hourAngle, minuteAngle };
-};
-
-// 扇形のスタイルを生成
-const generateSectorStyle = (startAngle: number, endAngle: number, color: string) => {
-  const startRad = (startAngle - 90) * (Math.PI / 180);
-  const endRad = (endAngle - 90) * (Math.PI / 180);
-  
-  const x1 = 150 + 150 * Math.cos(startRad);
-  const y1 = 150 + 150 * Math.sin(startRad);
-  const x2 = 150 + 150 * Math.cos(endRad);
-  const y2 = 150 + 150 * Math.sin(endRad);
-
-  const largeArcFlag = endAngle - startAngle <= 180 ? 0 : 1;
-
-  const path = `
-    M 150 150
-    L ${x1} ${y1}
-    A 150 150 0 ${largeArcFlag} 1 ${x2} ${y2}
-    Z
-  `;
-
-  return {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    '& path': {
-      fill: color,
-      opacity: 0.3,
-      stroke: color,
-      strokeWidth: 2,
-    },
-  };
-};
 
 export default function TimeTable() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -138,7 +97,7 @@ export default function TimeTable() {
       </Typography>
       
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} component="div">
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
               スケジュール入力
@@ -223,127 +182,12 @@ export default function TimeTable() {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} component="div">
           <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               スケジュール表示
             </Typography>
-            <Box sx={{ 
-              position: 'relative', 
-              width: '100%', 
-              height: 400,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-              {/* 時計の外枠 */}
-              <Box sx={{
-                position: 'relative',
-                width: 300,
-                height: 300,
-                borderRadius: '50%',
-                border: '2px solid #000',
-                backgroundColor: '#fff',
-              }}>
-                {/* スケジュールの領域 */}
-                {schedules.map((schedule) => {
-                  const start = calculateHandAngle(schedule.startTime);
-                  const end = calculateHandAngle(schedule.endTime);
-                  return (
-                    <Box
-                      key={schedule.id}
-                      sx={generateSectorStyle(start.hourAngle, end.hourAngle, schedule.color)}
-                    >
-                      <svg width="300" height="300" viewBox="0 0 300 300">
-                        <path d={`
-                          M 150 150
-                          L ${150 + 150 * Math.cos((start.hourAngle - 90) * (Math.PI / 180))} 
-                             ${150 + 150 * Math.sin((start.hourAngle - 90) * (Math.PI / 180))}
-                          A 150 150 0 ${end.hourAngle - start.hourAngle <= 180 ? 0 : 1} 1
-                             ${150 + 150 * Math.cos((end.hourAngle - 90) * (Math.PI / 180))}
-                             ${150 + 150 * Math.sin((end.hourAngle - 90) * (Math.PI / 180))}
-                          Z
-                        `} />
-                      </svg>
-                    </Box>
-                  );
-                })}
-
-                {/* 時計の数字 */}
-                {[12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((hour) => (
-                  <Typography
-                    key={hour}
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: `translate(-50%, -50%) rotate(${hour * 30}deg) translateY(-120px) rotate(${-hour * 30}deg)`,
-                      fontSize: '1.2rem',
-                      fontWeight: 'bold',
-                      zIndex: 1,
-                    }}
-                  >
-                    {hour}
-                  </Typography>
-                ))}
-
-                {/* 時計の目盛り */}
-                {Array.from({ length: 60 }).map((_, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      width: i % 5 === 0 ? '2px' : '1px',
-                      height: i % 5 === 0 ? '10px' : '5px',
-                      backgroundColor: '#000',
-                      transformOrigin: 'bottom center',
-                      transform: `translate(-50%, -100%) rotate(${i * 6}deg) translateY(-140px)`,
-                      zIndex: 1,
-                    }}
-                  />
-                ))}
-              </Box>
-
-              {/* スケジュールの凡例 */}
-              <Box sx={{ 
-                position: 'absolute', 
-                bottom: 0, 
-                left: 0, 
-                right: 0,
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 1,
-                p: 1
-              }}>
-                {schedules.map((schedule) => (
-                  <Box
-                    key={schedule.id}
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 0.5,
-                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                      padding: '4px 8px',
-                      borderRadius: 1,
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: 12,
-                        height: 12,
-                        backgroundColor: schedule.color,
-                        borderRadius: '50%',
-                      }}
-                    />
-                    <Typography variant="body2">
-                      {schedule.title} ({schedule.startTime}-{schedule.endTime})
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
+            <ScheduleDisplay schedules={schedules} />
           </Paper>
         </Grid>
       </Grid>
