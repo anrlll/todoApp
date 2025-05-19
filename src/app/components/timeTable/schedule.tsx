@@ -70,11 +70,11 @@ export default function ScheduleDisplay({ schedules }: ScheduleDisplayProps) {
               <svg width="300" height="300" viewBox="0 0 300 300">
                 <path d={`
                   M 150 150
-                  L ${150 + 150 * Math.cos((start.hourAngle - 90) * (Math.PI / 180))} 
-                     ${150 + 150 * Math.sin((start.hourAngle - 90) * (Math.PI / 180))}
-                  A 150 150 0 ${end.hourAngle - start.hourAngle <= 180 ? 0 : 1} 1
-                     ${150 + 150 * Math.cos((end.hourAngle - 90) * (Math.PI / 180))}
-                     ${150 + 150 * Math.sin((end.hourAngle - 90) * (Math.PI / 180))}
+                  L ${150 + 148 * Math.cos((start.hourAngle - 90) * (Math.PI / 180))} 
+                     ${150 + 148 * Math.sin((start.hourAngle - 90) * (Math.PI / 180))}
+                  A 148 148 0 ${end.hourAngle - start.hourAngle <= 180 ? 0 : 1} 1
+                     ${150 + 148 * Math.cos((end.hourAngle - 90) * (Math.PI / 180))}
+                     ${150 + 148 * Math.sin((end.hourAngle - 90) * (Math.PI / 180))}
                   Z
                 `} />
               </svg>
