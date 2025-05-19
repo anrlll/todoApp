@@ -49,6 +49,31 @@ export default function ScheduleInput({ onAddSchedule, existingSchedules }: Sche
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
 
+  // 時間が既存のスケジュールと重複しているかチェック
+  const isTimeOverlapping = (time: string) => {
+    return existingSchedules.some(schedule => {
+      const scheduleStart = new Date(`2000-01-01T${schedule.startTime}`);
+      const scheduleEnd = new Date(`2000-01-01T${schedule.endTime}`);
+      const checkTime = new Date(`2000-01-01T${time}`);
+      return checkTime >= scheduleStart && checkTime < scheduleEnd;
+    });
+  };
+
+  // 開始時間のオプションをフィルタリング
+  const getStartTimeOptions = () => {
+    return TIME_OPTIONS.filter(time => !isTimeOverlapping(time));
+  };
+
+  // 終了時間のオプションをフィルタリング
+  const getEndTimeOptions = () => {
+    if (!startTime) return [];
+    const start = new Date(`2000-01-01T${startTime}`);
+    return TIME_OPTIONS.filter(time => {
+      const timeDate = new Date(`2000-01-01T${time}`);
+      return timeDate > start && !isTimeOverlapping(time);
+    });
+  };
+
   const handleAddSchedule = async () => {
     if (!title || !startTime || !endTime) return;
 
@@ -88,6 +113,7 @@ export default function ScheduleInput({ onAddSchedule, existingSchedules }: Sche
     const value = event.target.value;
     if (type === 'start') {
       setStartTime(value);
+      setEndTime(''); // 開始時間が変更されたら終了時間をリセット
     } else {
       setEndTime(value);
     }
@@ -113,7 +139,7 @@ export default function ScheduleInput({ onAddSchedule, existingSchedules }: Sche
             label="開始時間"
             onChange={(e) => handleTimeChange(e, 'start')}
           >
-            {TIME_OPTIONS.map((time) => (
+            {getStartTimeOptions().map((time) => (
               <MenuItem key={time} value={time}>
                 {time}
               </MenuItem>
@@ -127,8 +153,9 @@ export default function ScheduleInput({ onAddSchedule, existingSchedules }: Sche
             value={endTime}
             label="終了時間"
             onChange={(e) => handleTimeChange(e, 'end')}
+            disabled={!startTime}
           >
-            {TIME_OPTIONS.map((time) => (
+            {getEndTimeOptions().map((time) => (
               <MenuItem key={time} value={time}>
                 {time}
               </MenuItem>
