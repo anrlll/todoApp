@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 const drawerWidth = 240;
+const collapsedWidth = 64;
 
 export default function LayoutContent({
   children,
@@ -33,10 +34,10 @@ export default function LayoutContent({
         variant="permanent"
         open={open}
         sx={{
-          width: open ? drawerWidth : 64,
+          width: open ? drawerWidth : collapsedWidth,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: open ? drawerWidth : 64,
+            width: open ? drawerWidth : collapsedWidth,
             boxSizing: 'border-box',
             transition: 'width 0.2s',
             overflowX: 'hidden',
@@ -60,71 +61,64 @@ export default function LayoutContent({
             {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </Box>
-        <Box sx={{ 
-          overflow: 'auto',
-          '&::-webkit-scrollbar': {
-            display: 'none',
-          },
-          msOverflowStyle: 'none',
-          scrollbarWidth: 'none',
-        }}>
-          <List>
-            <ListItem disablePadding>
-              <ListItemButton 
-                component={Link} 
-                href="/"
-                sx={{ 
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  width: '100%',
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton 
+              component={Link} 
+              href="/"
+              sx={{ 
+                minHeight: 48,
+                justifyContent: 'center',
+                px: 2.5,
+                width: '100%',
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  justifyContent: 'center',
+                  width: 40,
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 0,
-                    justifyContent: 'center',
-                    width: 40,
-                  }}
-                >
-                  <TodoIcon />
-                </ListItemIcon>
+                <TodoIcon />
+              </ListItemIcon>
+              {open && (
                 <ListItemText 
                   primary="Todoリスト" 
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ ml: 2 }}
                 />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton 
-                component={Link} 
-                href="/timetable"
-                sx={{ 
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  width: '100%',
+              )}
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton 
+              component={Link} 
+              href="/timetable"
+              sx={{ 
+                minHeight: 48,
+                justifyContent: 'center',
+                px: 2.5,
+                width: '100%',
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  justifyContent: 'center',
+                  width: 40,
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 0,
-                    justifyContent: 'center',
-                    width: 40,
-                  }}
-                >
-                  <TimeTableIcon />
-                </ListItemIcon>
+                <TimeTableIcon />
+              </ListItemIcon>
+              {open && (
                 <ListItemText 
                   primary="タイムテーブル" 
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ ml: 2 }}
                 />
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Box>
+              )}
+            </ListItemButton>
+          </ListItem>
+        </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {children}
