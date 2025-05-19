@@ -68,7 +68,7 @@ export default function LayoutContent({
               href="/"
               sx={{ 
                 minHeight: 48,
-                justifyContent: 'center',
+                justifyContent: 'flex-start',
                 px: 2.5,
                 width: '100%',
               }}
@@ -82,12 +82,18 @@ export default function LayoutContent({
               >
                 <TodoIcon />
               </ListItemIcon>
-              {open && (
-                <ListItemText 
-                  primary="Todoリスト" 
-                  sx={{ ml: 2 }}
-                />
-              )}
+              <Box
+                sx={{
+                  ml: 2,
+                  opacity: open ? 1 : 0,
+                  transform: open ? 'translateX(0)' : 'translateX(-10px)',
+                  transition: 'opacity 0.2s, transform 0.2s',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                }}
+              >
+                <ListItemText primary="Todoリスト" />
+              </Box>
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -96,7 +102,7 @@ export default function LayoutContent({
               href="/timetable"
               sx={{ 
                 minHeight: 48,
-                justifyContent: 'center',
+                justifyContent: 'flex-start',
                 px: 2.5,
                 width: '100%',
               }}
@@ -110,12 +116,18 @@ export default function LayoutContent({
               >
                 <TimeTableIcon />
               </ListItemIcon>
-              {open && (
-                <ListItemText 
-                  primary="タイムテーブル" 
-                  sx={{ ml: 2 }}
-                />
-              )}
+              <Box
+                sx={{
+                  ml: 2,
+                  opacity: open ? 1 : 0,
+                  transform: open ? 'translateX(0)' : 'translateX(-10px)',
+                  transition: 'opacity 0.2s, transform 0.2s',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                }}
+              >
+                <ListItemText primary="タイムテーブル" />
+              </Box>
             </ListItemButton>
           </ListItem>
         </List>
