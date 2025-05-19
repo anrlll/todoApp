@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = params.id;
     await prisma.schedule.delete({
-      where: { id },
+      where: {
+        id: params.id,
+      },
     });
     return NextResponse.json({ message: 'スケジュールを削除しました' });
   } catch (error) {

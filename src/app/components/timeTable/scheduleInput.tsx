@@ -49,6 +49,13 @@ export default function ScheduleInput({ onAddSchedule, existingSchedules }: Sche
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
 
+  // 使用されていない色を取得
+  const getUnusedColor = () => {
+    const usedColors = new Set(existingSchedules.map(schedule => schedule.color));
+    const unusedColors = COLORS.filter(color => !usedColors.has(color));
+    return unusedColors.length > 0 ? unusedColors[0] : COLORS[0];
+  };
+
   // 時間が既存のスケジュールと重複しているかチェック
   const isTimeOverlapping = (time: string) => {
     return existingSchedules.some(schedule => {
@@ -95,7 +102,7 @@ export default function ScheduleInput({ onAddSchedule, existingSchedules }: Sche
       title,
       startTime,
       endTime,
-      color: COLORS[existingSchedules.length % COLORS.length],
+      color: getUnusedColor(),
     };
 
     try {
