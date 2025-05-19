@@ -14,14 +14,10 @@ interface Schedule {
 interface ScheduleListProps {
   schedules: Schedule[];
   onDeleteSchedule: (id: string) => Promise<void>;
+  onHighlightSchedule?: (id: string | null) => void;
 }
 
-export default function ScheduleList({ schedules, onDeleteSchedule }: ScheduleListProps) {
-  // スケジュールを開始時間でソート
-  const sortedSchedules = [...schedules].sort((a, b) => {
-    return a.startTime.localeCompare(b.startTime);
-  });
-
+export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightSchedule }: ScheduleListProps) {
   const handleDelete = async (id: string) => {
     if (window.confirm('このスケジュールを削除してもよろしいですか？')) {
       try {
@@ -33,13 +29,16 @@ export default function ScheduleList({ schedules, onDeleteSchedule }: ScheduleLi
     }
   };
 
+  // スケジュールを開始時間でソート
+  const sortedSchedules = [...schedules].sort((a, b) => {
+    return a.startTime.localeCompare(b.startTime);
+  });
+
   return (
     <Paper sx={{ p: 3, mt: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6">
-          スケジュール一覧
-        </Typography>
-      </Box>
+      <Typography variant="h6" gutterBottom>
+        スケジュール一覧
+      </Typography>
       <TableContainer>
         <Table>
           <TableHead>
@@ -51,26 +50,37 @@ export default function ScheduleList({ schedules, onDeleteSchedule }: ScheduleLi
           </TableHead>
           <TableBody>
             {sortedSchedules.map((schedule) => (
-              <TableRow key={schedule.id}>
+              <TableRow
+                key={schedule.id}
+                onMouseEnter={() => onHighlightSchedule?.(schedule.id)}
+                onMouseLeave={() => onHighlightSchedule?.(null)}
+                sx={{
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  },
+                }}
+              >
+                <TableCell>
+                  {schedule.startTime} - {schedule.endTime}
+                </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Box
                       sx={{
-                        width: 12,
-                        height: 12,
+                        width: 16,
+                        height: 16,
                         backgroundColor: schedule.color,
-                        borderRadius: '50%',
+                        borderRadius: '4px',
                       }}
                     />
-                    {schedule.startTime} - {schedule.endTime}
+                    {schedule.title}
                   </Box>
                 </TableCell>
-                <TableCell>{schedule.title}</TableCell>
                 <TableCell align="right">
                   <Tooltip title="削除">
                     <IconButton
                       onClick={() => handleDelete(schedule.id)}
-                      color="error"
                       size="small"
                     >
                       <DeleteIcon />

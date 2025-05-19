@@ -26,7 +26,7 @@ const calculateHandAngle = (time: string) => {
 };
 
 // 扇形のスタイルを生成
-const generateSectorStyle = (startAngle: number, endAngle: number, color: string) => {
+const generateSectorStyle = (startAngle: number, endAngle: number, color: string, isHighlighted: boolean = false) => {
   return {
     position: 'absolute',
     top: 0,
@@ -35,9 +35,9 @@ const generateSectorStyle = (startAngle: number, endAngle: number, color: string
     height: '100%',
     '& path': {
       fill: color,
-      opacity: 0.3,
+      opacity: isHighlighted ? 0.5 : 0.3,
       stroke: color,
-      strokeWidth: 2,
+      strokeWidth: isHighlighted ? 3 : 2,
     },
   };
 };
@@ -65,7 +65,15 @@ const splitScheduleByPeriod = (schedule: Schedule) => {
 };
 
 // 時計コンポーネント
-const Clock = ({ schedules, period }: { schedules: Schedule[], period: 'am' | 'pm' }) => {
+const Clock = ({ 
+  schedules, 
+  period,
+  highlightedScheduleId
+}: { 
+  schedules: Schedule[], 
+  period: 'am' | 'pm',
+  highlightedScheduleId: string | null
+}) => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -113,10 +121,11 @@ const Clock = ({ schedules, period }: { schedules: Schedule[], period: 'am' | 'p
       {displaySchedules.map((schedule) => {
         const start = calculateHandAngle(schedule.startTime);
         const end = calculateHandAngle(schedule.endTime);
+        const isHighlighted = schedule.id === highlightedScheduleId;
         return (
           <Box
             key={`${schedule.id}-${schedule.startTime}`}
-            sx={generateSectorStyle(start.hourAngle, end.hourAngle, schedule.color)}
+            sx={generateSectorStyle(start.hourAngle, end.hourAngle, schedule.color, isHighlighted)}
           >
             <svg width="300" height="300" viewBox="0 0 300 300">
               <path d={`
@@ -216,6 +225,8 @@ const Clock = ({ schedules, period }: { schedules: Schedule[], period: 'am' | 'p
 };
 
 export default function ScheduleDisplay({ schedules, onDeleteSchedule }: ScheduleDisplayProps) {
+  const [highlightedScheduleId, setHighlightedScheduleId] = useState<string | null>(null);
+
   return (
     <>
       <Paper sx={{ p: 3 }}>
@@ -234,17 +245,29 @@ export default function ScheduleDisplay({ schedules, onDeleteSchedule }: Schedul
           {/* 午前の時計 */}
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6" gutterBottom>午前</Typography>
-            <Clock schedules={schedules} period="am" />
+            <Clock 
+              schedules={schedules} 
+              period="am" 
+              highlightedScheduleId={highlightedScheduleId}
+            />
           </Box>
 
           {/* 午後の時計 */}
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6" gutterBottom>午後</Typography>
-            <Clock schedules={schedules} period="pm" />
+            <Clock 
+              schedules={schedules} 
+              period="pm" 
+              highlightedScheduleId={highlightedScheduleId}
+            />
           </Box>
         </Box>
       </Paper>
-      <ScheduleList schedules={schedules} onDeleteSchedule={onDeleteSchedule} />
+      <ScheduleList 
+        schedules={schedules} 
+        onDeleteSchedule={onDeleteSchedule} 
+        onHighlightSchedule={setHighlightedScheduleId}
+      />
     </>
   );
 } 
