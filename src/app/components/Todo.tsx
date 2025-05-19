@@ -233,7 +233,16 @@ export default function Todo() {
   if (isLoading) {
     return (
       <Container maxWidth="sm" sx={{ mt: 4 }}>
-        <Typography align="center">読み込み中...</Typography>
+        <Paper
+          elevation={3}
+          sx={{
+            p: 3,
+            borderRadius: 2,
+            bgcolor: theme.palette.background.default,
+          }}
+        >
+          <Typography align="center">読み込み中...</Typography>
+        </Paper>
       </Container>
     );
   }
