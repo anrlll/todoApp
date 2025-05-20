@@ -111,8 +111,13 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
       <Dialog
         open={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
-        maxWidth="md"
+        maxWidth="sm"
         fullWidth
+        PaperProps={{
+          sx: {
+            maxHeight: '50%',
+          }
+        }}
       >
         <RegisterSchedule
           onClose={() => setIsRegisterModalOpen(false)}

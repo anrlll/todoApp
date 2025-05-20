@@ -31,13 +31,8 @@ export default function RegisterSchedule({ onClose, onAddSchedule, existingSched
 
   return (
     <>
-      <DialogTitle>
-        <Typography variant="h5">スケジュール登録</Typography>
-      </DialogTitle>
       <DialogContent>
-        <Box sx={{ mt: 2 }}>
           <ScheduleInput onAddSchedule={handleAddSchedule} existingSchedules={existingSchedules} />
-        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>キャンセル</Button>
