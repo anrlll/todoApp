@@ -1,8 +1,9 @@
 'use client';
 
-import { Box, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip, Button } from '@mui/material';
+import { useState } from 'react';
+import { Box, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip, Button, Dialog } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useRouter } from 'next/navigation';
+import RegisterSchedule from './registerSchedule';
 
 interface Schedule {
   id: string;
@@ -16,10 +17,11 @@ interface ScheduleListProps {
   schedules: Schedule[];
   onDeleteSchedule: (id: string) => Promise<void>;
   onHighlightSchedule?: (id: string | null) => void;
+  onAddSchedule: (schedule: Omit<Schedule, 'id'>) => Promise<void>;
 }
 
-export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightSchedule }: ScheduleListProps) {
-  const router = useRouter();
+export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightSchedule, onAddSchedule }: ScheduleListProps) {
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   const handleDelete = async (id: string) => {
     if (window.confirm('このスケジュールを削除してもよろしいですか？')) {
@@ -46,12 +48,13 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
         <Button
           variant="contained"
           color="primary"
-          onClick={() => router.push('/timetable/register')}
+          onClick={() => setIsRegisterModalOpen(true)}
         >
           スケジュール登録
         </Button>
       </Box>
-      <TableContainer sx={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
+      
+      <TableContainer sx={{ flex: 1, overflow: 'auto' }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -104,6 +107,19 @@ export default function ScheduleList({ schedules, onDeleteSchedule, onHighlightS
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog
+        open={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <RegisterSchedule
+          onClose={() => setIsRegisterModalOpen(false)}
+          onAddSchedule={onAddSchedule}
+          existingSchedules={schedules}
+        />
+      </Dialog>
     </Paper>
   );
 } 

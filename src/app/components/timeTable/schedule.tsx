@@ -227,6 +227,24 @@ const Clock = ({
 export default function ScheduleDisplay({ schedules, onDeleteSchedule }: ScheduleDisplayProps) {
   const [highlightedScheduleId, setHighlightedScheduleId] = useState<string | null>(null);
 
+  const handleAddSchedule = async (newSchedule: Omit<Schedule, 'id'>) => {
+    try {
+      const response = await fetch('/api/schedules', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newSchedule),
+      });
+
+      if (!response.ok) throw new Error('スケジュールの追加に失敗しました');
+      window.location.reload(); // スケジュール一覧を更新
+    } catch (error) {
+      console.error('スケジュールの追加に失敗しました:', error);
+      throw error;
+    }
+  };
+
   return (
     <Box sx={{ display: 'flex', gap: 3, height: 'calc(100vh - 64px)' }}>
       <Paper sx={{ p: 3, flex: 1 }}>
@@ -269,6 +287,7 @@ export default function ScheduleDisplay({ schedules, onDeleteSchedule }: Schedul
           schedules={schedules} 
           onDeleteSchedule={onDeleteSchedule} 
           onHighlightSchedule={setHighlightedScheduleId}
+          onAddSchedule={handleAddSchedule}
         />
       </Box>
     </Box>

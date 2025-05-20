@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Button, Container, Paper, Typography } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { Box, Button, Paper, Typography, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import ScheduleInput from './scheduleInput';
 
 interface Schedule {
@@ -13,38 +12,17 @@ interface Schedule {
   color: string;
 }
 
-export default function RegisterSchedule() {
-  const router = useRouter();
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
+interface RegisterScheduleProps {
+  onClose: () => void;
+  onAddSchedule: (schedule: Omit<Schedule, 'id'>) => Promise<void>;
+  existingSchedules: Schedule[];
+}
 
-  // スケジュールの取得
-  const fetchSchedules = async () => {
-    try {
-      const response = await fetch('/api/schedules');
-      if (!response.ok) throw new Error('スケジュールの取得に失敗しました');
-      const data = await response.json();
-      setSchedules(data);
-    } catch (error) {
-      console.error('スケジュールの取得に失敗しました:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchSchedules();
-  }, []);
-
+export default function RegisterSchedule({ onClose, onAddSchedule, existingSchedules }: RegisterScheduleProps) {
   const handleAddSchedule = async (newSchedule: Omit<Schedule, 'id'>) => {
     try {
-      const response = await fetch('/api/schedules', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newSchedule),
-      });
-
-      if (!response.ok) throw new Error('スケジュールの追加に失敗しました');
-      router.push('/timetable');
+      await onAddSchedule(newSchedule);
+      onClose();
     } catch (error) {
       console.error('スケジュールの追加に失敗しました:', error);
       throw error;
@@ -52,19 +30,18 @@ export default function RegisterSchedule() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Paper sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h5">スケジュール登録</Typography>
-          <Button
-            variant="outlined"
-            onClick={() => router.push('/timetable')}
-          >
-            戻る
-          </Button>
+    <>
+      <DialogTitle>
+        <Typography variant="h5">スケジュール登録</Typography>
+      </DialogTitle>
+      <DialogContent>
+        <Box sx={{ mt: 2 }}>
+          <ScheduleInput onAddSchedule={handleAddSchedule} existingSchedules={existingSchedules} />
         </Box>
-        <ScheduleInput onAddSchedule={handleAddSchedule} existingSchedules={schedules} />
-      </Paper>
-    </Container>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>キャンセル</Button>
+      </DialogActions>
+    </>
   );
 } 
