@@ -214,16 +214,38 @@ export default function Todo() {
     }
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setTodos((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
+      const oldIndex = todos.findIndex((item) => item.id === active.id);
+      const newIndex = todos.findIndex((item) => item.id === over.id);
+      const newTodos = arrayMove(todos, oldIndex, newIndex);
+      setTodos(newTodos);
 
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      // 位置情報を更新
+      try {
+        const updates = newTodos.map((todo, index) => ({
+          id: todo.id,
+          position: index,
+        }));
+
+        await Promise.all(
+          updates.map((update) =>
+            fetch(`/api/todos/${update.id}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ position: update.position }),
+            })
+          )
+        );
+      } catch (error) {
+        console.error('Error updating todo positions:', error);
+        // エラーが発生した場合は元の順序に戻す
+        fetchTodos();
+      }
     }
   };
 

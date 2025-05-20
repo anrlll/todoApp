@@ -6,13 +6,13 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { completed } = await request.json();
+    const body = await request.json();
     const todo = await prisma.todo.update({
       where: {
         id: parseInt(params.id),
       },
       data: {
-        completed,
+        ...body,
       },
     });
     return NextResponse.json(todo);
