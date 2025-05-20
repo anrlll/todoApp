@@ -13,27 +13,20 @@ import {
   Alert,
 } from '@mui/material';
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    if (password !== confirmPassword) {
-      setError('パスワードが一致しません');
-      return;
-    }
-
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,12 +37,13 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || '登録に失敗しました');
+        throw new Error(data.error || 'ログインに失敗しました');
       }
 
-      router.push('/login');
+      router.push('/todo');
+      router.refresh();
     } catch (error) {
-      setError(error instanceof Error ? error.message : '登録に失敗しました');
+      setError(error instanceof Error ? error.message : 'ログインに失敗しました');
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +61,7 @@ export default function RegisterPage() {
         }}
       >
         <Typography component="h1" variant="h5" gutterBottom>
-          アカウント登録
+          ログイン
         </Typography>
 
         {error && (
@@ -96,17 +90,7 @@ export default function RegisterPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="パスワード（確認）"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            autoComplete="new-password"
+            autoComplete="current-password"
           />
           <Button
             type="submit"
@@ -115,11 +99,11 @@ export default function RegisterPage() {
             sx={{ mt: 3, mb: 2 }}
             disabled={isLoading}
           >
-            {isLoading ? '登録中...' : '登録'}
+            {isLoading ? 'ログイン中...' : 'ログイン'}
           </Button>
           <Box sx={{ textAlign: 'center' }}>
-            <Link href="/login" variant="body2">
-              すでにアカウントをお持ちの方はこちら
+            <Link href="/register" variant="body2">
+              アカウントをお持ちでない方はこちら
             </Link>
           </Box>
         </Box>

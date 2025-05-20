@@ -1,15 +1,20 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth';
 
 export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const user = await requireAuth();
+  if (user instanceof NextResponse) return user;
+
   try {
     const body = await request.json();
     const todo = await prisma.todo.update({
       where: {
         id: parseInt(params.id),
+        userId: user.id,
       },
       data: {
         ...body,
@@ -26,10 +31,14 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const user = await requireAuth();
+  if (user instanceof NextResponse) return user;
+
   try {
     await prisma.todo.delete({
       where: {
         id: parseInt(params.id),
+        userId: user.id,
       },
     });
     return NextResponse.json({ success: true });
