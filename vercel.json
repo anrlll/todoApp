@@ -3,6 +3,7 @@
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "framework": "nextjs",
+  "regions": ["iad1"],
   "env": {
     "NODE_ENV": "production",
     "DATABASE_URL": "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiMDFKVzJBMEROMlRWVjI1V1haTVc2ODc2SjIiLCJ0ZW5hbnRfaWQiOiI5NmY4YmMwNGMzMmQzODg3NTY5YmVmMTcxYmYwZjhkMmFjOGFlNjdiOTI1ZjI2Y2RhY2UwNzdmN2U0YWIyODYyIiwiaW50ZXJuYWxfc2VjcmV0IjoiZjk3NzhmNDMtMWFkNy00YzdiLTg0ODYtYzg0ZTA0YWNkNDlkIn0.ziSMlpjOlOfeL0SbxWzNSzQoeGvqG1HrUdqUV37ai4g",
