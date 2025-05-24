@@ -21,7 +21,7 @@ export const config = {
   matcher: [
     '/todo/:path*',
     '/timetable/:path*',
-    '/api/todo/:path*',
+    '/api/todos/:path*',
     '/api/schedules/:path*',
     '/login',
     '/register',
