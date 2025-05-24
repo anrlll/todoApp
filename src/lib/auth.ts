@@ -37,7 +37,8 @@ export async function verifyToken(token: string) {
 }
 
 export async function getCurrentUser() {
-  const token = cookies().get('token')?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
   if (!token) return null;
 
   const payload = await verifyToken(token);
