@@ -1,12 +1,22 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth';
 
 // スケジュールの取得
 export async function GET() {
   try {
+    const user = await requireAuth();
+    if (!user) {
+      return NextResponse.json(
+        { error: '認証が必要です' },
+        { status: 401 }
+      );
+    }
+
     const schedules = await prisma.schedule.findMany({
+      where: {
+        userId: user.id
+      },
       orderBy: {
         startTime: 'asc',
       },
@@ -24,9 +34,20 @@ export async function GET() {
 // スケジュールの追加
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth();
+    if (!user) {
+      return NextResponse.json(
+        { error: '認証が必要です' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const schedule = await prisma.schedule.create({
-      data: body,
+      data: {
+        ...body,
+        userId: user.id
+      },
     });
     return NextResponse.json(schedule);
   } catch (error) {
